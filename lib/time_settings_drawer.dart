@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TimeSettingsDrawer extends StatelessWidget {
-  const TimeSettingsDrawer({super.key});
+  TimeSettingsDrawer({super.key}) {
+    _initTextFieldVal("Pomodoro", 25, _pomodoroTextFieldContrl);
+    _initTextFieldVal("Short break", 5, _shortBreakTextFieldContrl);
+    _initTextFieldVal("Long break", 15, _longBreakTextFieldContrl);
+  }
+
+  static final TextEditingController _pomodoroTextFieldContrl =
+      TextEditingController();
+  static final TextEditingController _shortBreakTextFieldContrl =
+      TextEditingController();
+  static final TextEditingController _longBreakTextFieldContrl =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +30,11 @@ class TimeSettingsDrawer extends StatelessWidget {
                 2: FractionColumnWidth(0.15),
               },
               children: [
-                _getTableRow('Pomodoro', 25),
+                _getTableRow('Pomodoro', 25, _pomodoroTextFieldContrl),
                 _getSpacingRow(),
-                _getTableRow('Short break', 5),
+                _getTableRow('Short break', 5, _shortBreakTextFieldContrl),
                 _getSpacingRow(),
-                _getTableRow('Long break', 15),
+                _getTableRow('Long break', 15, _longBreakTextFieldContrl),
               ])
         ],
       ),
@@ -69,7 +81,8 @@ class TimeSettingsDrawer extends StatelessWidget {
     );
   }
 
-  TableRow _getTableRow(String what, int defaultVal) {
+  TableRow _getTableRow(String what, int defaultVal,
+      TextEditingController textEditingController) {
     return TableRow(
       children: [
         TableCell(
@@ -90,7 +103,13 @@ class TimeSettingsDrawer extends StatelessWidget {
                 LengthLimitingTextInputFormatter(2)
               ],
               decoration: const InputDecoration(border: OutlineInputBorder()),
-              controller: TextEditingController()..text = defaultVal.toString(),
+              controller: textEditingController,
+              onChanged: (value) {
+                if (value != "") {
+                  _saveTimeToPreferences(
+                      what, int.parse(textEditingController.text));
+                }
+              },
             ),
           ),
         ),
@@ -112,5 +131,27 @@ class TimeSettingsDrawer extends StatelessWidget {
       SizedBox(height: 10),
       SizedBox(height: 10),
     ]);
+  }
+
+  static Future<int?> _getTimeFromPreferences(what) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(what);
+  }
+
+  static void _saveTimeToPreferences(what, value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt(what, value).then((value) => null);
+  }
+
+  static void _initTextFieldVal(
+      String what, int defVal, TextEditingController controller) {
+    _getTimeFromPreferences(what).then((value) {
+      if (value == null) {
+        _saveTimeToPreferences(what, defVal);
+        controller.text = defVal.toString();
+      } else {
+        controller.text = value.toString();
+      }
+    });
   }
 }

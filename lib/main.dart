@@ -117,6 +117,6 @@ class _MyHomePageState extends State<HomePage> {
           tooltip: 'Increment',
           child: const Icon(Icons.add),
         ),
-        drawer: const TimeSettingsDrawer());
+        drawer: TimeSettingsDrawer());
   }
 }
