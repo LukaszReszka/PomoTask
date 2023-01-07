@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pomo_task/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TimeSettingsDrawer extends StatelessWidget {
@@ -30,11 +31,11 @@ class TimeSettingsDrawer extends StatelessWidget {
                 2: FractionColumnWidth(0.15),
               },
               children: [
-                _getTableRow('Pomodoro', 25, _pomodoroTextFieldContrl),
+                _getTableRow('Pomodoro', pomodoroTime, _pomodoroTextFieldContrl),
                 _getSpacingRow(),
-                _getTableRow('Short break', 5, _shortBreakTextFieldContrl),
+                _getTableRow('Short break', shortBreakTime, _shortBreakTextFieldContrl),
                 _getSpacingRow(),
-                _getTableRow('Long break', 15, _longBreakTextFieldContrl),
+                _getTableRow('Long break', longBreakTime, _longBreakTextFieldContrl),
               ])
         ],
       ),
