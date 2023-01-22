@@ -51,12 +51,13 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
     defaultConfig {
         applicationId "weiti.lreszka.pomo_task"
-        minSdkVersion 18
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders += [
-                'appAuthRedirectScheme': 'com.googleusercontent.apps.614633573965-a17jtp3ionjv76stke2cknmtsao3qv89.apps.googleusercontent.com'
+//                'appAuthRedirectScheme': 'com.googleusercontent.apps.614633573965-a17jtp3ionjv76stke2cknmtsao3qv89.apps.googleusercontent.com'
+            'appAuthRedirectScheme': 'weiti.lreszka.pomo_task'
         ]
     }
 

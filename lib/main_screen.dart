@@ -1,31 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pomo_task/time_settings_drawer.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key, required this.title});
-  final String title;
+import 'calendar_client.dart';
+
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key, required this.setNotLoggedInState});
+  final VoidCallback setNotLoggedInState;
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainPageState extends State<MainPage> {
-  bool _isLoading = false;
-  bool _isLoggedIn = false;
+class _MainScreenState extends State<MainScreen> {
   int _counter = 0;
-
-  @override
-  void initState() {
-    _setLoadingState();
-    //TODO reszta - trzeba też zmienić w Calendar
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: const Text('PomoTask'),
           actions: const [
             IconButton(
               icon: Icon(Icons.calendar_month),
@@ -55,29 +49,17 @@ class _MainPageState extends State<MainPage> {
         drawer: TimeSettingsDrawer());
   }
 
-  void _setLoadingState() {
-    setState(() {
-      _isLoading = true;
-    });
-  }
-
-  void _setLoggedInState() {
-    setState(() {
-      _isLoading = false;
-      _isLoggedIn = true;
-    });
-  }
-
-  void _setNotLoggedInState() {
-    setState(() {
-      _isLoading = false;
-      _isLoggedIn = false;
-    });
-  }
-
   void _incrementCounter() {
     setState(() {
       _counter++;
     });
   }
+
+  void logout() async { //TODO private?
+    final bool isUnauthenticated = await GetIt.instance.get<CalendarClient>().logout();
+    if (isUnauthenticated) {
+      widget.setNotLoggedInState();
+    }
+  }
+
 }
