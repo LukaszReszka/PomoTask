@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:pomo_task/calendar_client.dart';
 import 'package:pomo_task/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TimeSettingsDrawer extends StatelessWidget {
-  TimeSettingsDrawer({super.key}) {
+  TimeSettingsDrawer({super.key, required this.logoutAction}) {
     _initTextFieldVal("Pomodoro", 25, _pomodoroTextFieldContrl);
     _initTextFieldVal("Short break", 5, _shortBreakTextFieldContrl);
     _initTextFieldVal("Long break", 15, _longBreakTextFieldContrl);
   }
 
+  final VoidCallback logoutAction;
   static final TextEditingController _pomodoroTextFieldContrl =
       TextEditingController();
   static final TextEditingController _shortBreakTextFieldContrl =
@@ -31,12 +34,59 @@ class TimeSettingsDrawer extends StatelessWidget {
                 2: FractionColumnWidth(0.15),
               },
               children: [
-                _getTableRow('Pomodoro', pomodoroTime, _pomodoroTextFieldContrl),
+                _getTableRow(
+                    'Pomodoro', pomodoroTime, _pomodoroTextFieldContrl),
                 _getSpacingRow(),
-                _getTableRow('Short break', shortBreakTime, _shortBreakTextFieldContrl),
+                _getTableRow(
+                    'Short break', shortBreakTime, _shortBreakTextFieldContrl),
                 _getSpacingRow(),
-                _getTableRow('Long break', longBreakTime, _longBreakTextFieldContrl),
-              ])
+                _getTableRow(
+                    'Long break', longBreakTime, _longBreakTextFieldContrl),
+              ]),
+          const SizedBox(
+            height: 10,
+          ),
+          const Divider(
+            color: Color(0xffea7066),
+            thickness: 3,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Center(
+              child: CircleAvatar(
+                  radius: 78,
+                  backgroundColor: const Color(0xffea7066),
+                  child: CircleAvatar(
+                    radius: 75,
+                    backgroundColor: const Color(0xffea7066),
+                    foregroundImage: NetworkImage(
+                        GetIt.instance.get<CalendarClient>().getUserPhoto()),
+                  ))),
+          const SizedBox(
+            height: 10,
+          ),
+          Center(
+              child: Text(
+            GetIt.instance.get<CalendarClient>().getUserName(),
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          )),
+          Center(
+              child: Text(
+            GetIt.instance.get<CalendarClient>().getUserEmail(),
+            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          )),
+          Center(
+              child: TextButton(
+            style: TextButton.styleFrom(
+              textStyle:
+                  const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              foregroundColor: Colors.white,
+              backgroundColor: const Color(0xffea7066),
+            ),
+            onPressed: logoutAction,
+            child: const Text('Sign out'),
+          ))
         ],
       ),
     );
@@ -71,7 +121,7 @@ class TimeSettingsDrawer extends StatelessWidget {
                   ),
                 ),
                 const Text(
-                  "Time Settings",
+                  "Settings",
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ],

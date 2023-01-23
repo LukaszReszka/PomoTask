@@ -6,6 +6,7 @@ import 'calendar_client.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.setNotLoggedInState});
+
   final VoidCallback setNotLoggedInState;
 
   @override
@@ -46,7 +47,9 @@ class _MainScreenState extends State<MainScreen> {
           tooltip: 'Increment',
           child: const Icon(Icons.add),
         ),
-        drawer: TimeSettingsDrawer());
+        drawer: TimeSettingsDrawer(
+          logoutAction: logout,
+        ));
   }
 
   void _incrementCounter() {
@@ -55,11 +58,8 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void logout() async { //TODO private?
-    final bool isUnauthenticated = await GetIt.instance.get<CalendarClient>().logout();
-    if (isUnauthenticated) {
-      widget.setNotLoggedInState();
-    }
+  void logout() async {
+    await GetIt.instance.get<CalendarClient>().logout();
+    widget.setNotLoggedInState();
   }
-
 }
