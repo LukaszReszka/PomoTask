@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pomo_task/constants.dart';
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
@@ -8,21 +9,21 @@ class LoadingScreen extends StatelessWidget {
     return Container(
       height: double.infinity,
       width: double.infinity,
-      color: const Color(0xffea7066),
+      color: minorColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Image.asset(
-            'assets/images/tomato.png',
+            pathToLogo,
             height: 150,
           ),
           const SizedBox(
             height: 10,
           ),
           const CircularProgressIndicator(
-            backgroundColor: Color(0xffea7066),
-            color: Colors.white,
+            backgroundColor: minorColor,
+            color: backgroundColor,
           )
         ],
       ),

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pomo_task/time_settings_drawer.dart';
+import 'package:pomo_task/todo_list.dart';
 
 import 'calendar_client.dart';
+import 'constants.dart';
+import 'date_picker.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.setNotLoggedInState});
@@ -21,24 +24,17 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('PomoTask'),
-          actions: const [
-            IconButton(
-              icon: Icon(Icons.calendar_month),
-              onPressed: null,
-            )
-          ],
         ),
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              const Text(
-                'You have pushed the button this many times:',
+              DateChooser(replaceTaskList: nothing), //TODO metoda GroupLists
+              const Divider(
+                color: minorColor,
+                thickness: 3,
               ),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.headline4,
-              ),
+              const TodoList(),
             ],
           ),
         ),
@@ -52,7 +48,10 @@ class _MainScreenState extends State<MainScreen> {
         ));
   }
 
-  void _incrementCounter() {
+  Future<void> _incrementCounter() async {
+    await GetIt.instance
+        .get<CalendarClient>()
+        .addEvent('Test', '2023-01-23 23:15', '2023-01-23 23:30', 1, 2);
     setState(() {
       _counter++;
     });
@@ -61,5 +60,9 @@ class _MainScreenState extends State<MainScreen> {
   void logout() async {
     await GetIt.instance.get<CalendarClient>().logout();
     widget.setNotLoggedInState();
+  }
+
+  nothing() {
+    return;
   }
 }

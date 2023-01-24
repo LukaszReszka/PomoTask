@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/calendar/v3.dart';
 
@@ -10,19 +13,24 @@ class CalendarClient {
   Future<bool> initAuth() async {
     final isSignedIn = _googleSignIn.isSignedIn();
     if (await isSignedIn) {
+      log('User already logged in');
       _currentUser = await _googleSignIn.signInSilently();
-      //TODO inicjalizacja calendaApi
+      var httpClient = (await _googleSignIn.authenticatedClient())!;
+      _calendarApi = CalendarApi(httpClient);
     }
     return isSignedIn;
   }
 
   Future<bool> login() async {
+    log('Logging in user');
     _currentUser = await _googleSignIn.signIn();
-    //TODO inicjalizacja calendaApi
+    var httpClient = (await _googleSignIn.authenticatedClient())!;
+    _calendarApi = CalendarApi(httpClient);
     return (_currentUser != null);
   }
 
   logout() async {
+    log('Logging out user');
     await _googleSignIn.disconnect();
   }
 
@@ -38,38 +46,39 @@ class CalendarClient {
     return _currentUser?.email;
   }
 
-// insert(title, startTime, endTime) {
-//   var _clientID = ClientId("YOUR_CLIENT_ID", "");
-//   clientViaUserConsent(_clientID, _scopes, prompt).then((AuthClient client) {
-//     var calendar = CalendarApi(client);
-//     calendar.calendarList.list().then((value) => print("VAL________$value"));
-//
-//     String calendarId = "primary";
-//     Event event = Event(); // Create object of event
-//
-//     event.summary = title;
-//
-//     EventDateTime start = new EventDateTime();
-//     start.dateTime = startTime;
-//     start.timeZone = "GMT+05:00";
-//     event.start = start;
-//
-//     EventDateTime end = new EventDateTime();
-//     end.timeZone = "GMT+05:00";
-//     end.dateTime = endTime;
-//     event.end = end;
-//     try {
-//       calendar.events.insert(event, calendarId).then((value) {
-//         print("ADDEDDD_________________${value.status}");
-//         if (value.status == "confirmed") {
-//           log('Event added in google calendar');
-//         } else {
-//           log("Unable to add event in google calendar");
-//         }
-//       });
-//     } catch (e) {
-//       log('Error creating event $e');
-//     }
-//   });
-// }
+  addEvent(title, startTime, endTime, pomosDone, totalPomos) {
+    String calendarId = 'primary';
+
+    EventDateTime start = EventDateTime(
+        dateTime: DateTime.parse(startTime), timeZone: 'Europe/London');
+
+    EventDateTime end = EventDateTime(
+        dateTime: DateTime.parse(endTime), timeZone: 'Europe/London');
+
+    EventReminders reminders = EventReminders(
+        overrides: <EventReminder>[EventReminder(method: 'popup', minutes: 2)],
+        useDefault: false);
+
+    Event event = Event(
+        summary: title,
+        start: start,
+        end: end,
+        description: 'Created by PomoTask ;)\nPomos: $pomosDone/$totalPomos',
+        colorId: '11',
+        eventType: 'focusTime',
+        reminders: reminders);
+
+    try {
+      _calendarApi?.events.insert(event, calendarId).then((value) {
+        if (value.status == 'confirmed') {
+          log('Event added in google calendar');
+          return value;
+        } else {
+          log('Unable to add event in google calendar');
+        }
+      });
+    } catch (e) {
+      log('Error creating event $e');
+    }
+  }
 }

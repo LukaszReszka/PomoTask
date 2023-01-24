@@ -47,7 +47,7 @@ class TimeSettingsDrawer extends StatelessWidget {
             height: 10,
           ),
           const Divider(
-            color: Color(0xffea7066),
+            color: minorColor,
             thickness: 3,
           ),
           const SizedBox(
@@ -56,10 +56,10 @@ class TimeSettingsDrawer extends StatelessWidget {
           Center(
               child: CircleAvatar(
                   radius: 78,
-                  backgroundColor: const Color(0xffea7066),
+                  backgroundColor: minorColor,
                   child: CircleAvatar(
                     radius: 75,
-                    backgroundColor: const Color(0xffea7066),
+                    backgroundColor: minorColor,
                     foregroundImage: NetworkImage(
                         GetIt.instance.get<CalendarClient>().getUserPhoto()),
                   ))),
@@ -81,8 +81,8 @@ class TimeSettingsDrawer extends StatelessWidget {
             style: TextButton.styleFrom(
               textStyle:
                   const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              foregroundColor: Colors.white,
-              backgroundColor: const Color(0xffea7066),
+              foregroundColor: backgroundColor,
+              backgroundColor: minorColor,
             ),
             onPressed: logoutAction,
             child: const Text('Sign out'),
@@ -95,7 +95,7 @@ class TimeSettingsDrawer extends StatelessWidget {
   DrawerHeader _getDrawerHeader(BuildContext context) {
     return DrawerHeader(
       decoration: const BoxDecoration(
-        color: Color(0xffea7066),
+        color: minorColor,
       ),
       child: Stack(
         alignment: Alignment.center,
@@ -103,7 +103,7 @@ class TimeSettingsDrawer extends StatelessWidget {
           Positioned(
             top: 0,
             child: Image.asset(
-              'assets/images/tomato.png',
+              pathToLogo,
               height: 100,
             ),
           ),
@@ -117,12 +117,12 @@ class TimeSettingsDrawer extends StatelessWidget {
                   onPressed: () => Navigator.pop(context),
                   icon: const Icon(
                     Icons.arrow_back,
-                    color: Colors.white,
+                    color: backgroundColor,
                   ),
                 ),
                 const Text(
                   "Settings",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                  style: TextStyle(color: backgroundColor, fontSize: 20),
                 ),
               ],
             ),

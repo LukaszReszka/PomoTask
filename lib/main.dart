@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pomo_task/calendar_client.dart';
+import 'package:pomo_task/constants.dart';
 import 'package:pomo_task/loading_screen.dart';
 import 'package:pomo_task/login_screen.dart';
 import 'main_screen.dart';
 
-Future<void> main()  async {
+Future<void> main() async {
   GetIt.instance.registerSingleton<CalendarClient>(CalendarClient());
   runApp(const MyApp());
 }
@@ -17,7 +18,7 @@ class MyApp extends StatefulWidget {
   State<StatefulWidget> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp>{
+class _MyAppState extends State<MyApp> {
   bool _isLoading = false;
   bool _isLoggedIn = false;
 
@@ -27,27 +28,27 @@ class _MyAppState extends State<MyApp>{
       title: 'PomoTask App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: majorColor,
       ),
       home: SafeArea(
-        child: Builder (
+        child: Builder(
           builder: (context) {
-            if(_isLoading) {
+            if (_isLoading) {
               return const LoadingScreen();
-            } else if(_isLoggedIn) {
+            } else if (_isLoggedIn) {
               return MainScreen(setNotLoggedInState: setNotLoggedInState);
             } else {
               return LoginScreen(
                   setLoadingState: setLoadingState,
                   setLoggedInState: setLoggedInState,
-                  setNotLoggedInState: setNotLoggedInState
-              );
+                  setNotLoggedInState: setNotLoggedInState);
             }
           },
         ),
       ),
     );
   }
+
   // const MainScreen(title: 'PomoTask')
   @override
   void initState() {
@@ -57,8 +58,9 @@ class _MyAppState extends State<MyApp>{
 
   initAuth() async {
     setLoadingState();
-    final bool isAuthenticated = await GetIt.instance.get<CalendarClient>().initAuth();
-    if(isAuthenticated) {
+    final bool isAuthenticated =
+        await GetIt.instance.get<CalendarClient>().initAuth();
+    if (isAuthenticated) {
       setLoggedInState();
     } else {
       setNotLoggedInState();

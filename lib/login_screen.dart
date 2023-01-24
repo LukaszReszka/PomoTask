@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:pomo_task/constants.dart';
 import 'calendar_client.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -24,20 +25,20 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       height: double.infinity,
       width: double.infinity,
-      color: const Color(0xffea7066),
+      color: minorColor,
       child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Image.asset(
-              'assets/images/tomato.png',
+              pathToLogo,
               height: 150,
             ),
             const SizedBox(
               height: 10,
             ),
             const DefaultTextStyle(
-              style: TextStyle(color: Colors.white, fontSize: 20),
+              style: TextStyle(color: backgroundColor, fontSize: 20),
               child: Text('PomoTask - your time organizer :)'),
             ),
             const SizedBox(
