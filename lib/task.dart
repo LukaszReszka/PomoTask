@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get_it/get_it.dart';
+import 'package:pomo_task/calendar_client.dart';
 import 'package:pomo_task/constants.dart';
 
 class Task {
@@ -8,34 +10,41 @@ class Task {
   int pomosTotal = 0;
   String id = '';
 
+  final ValueSetter<String> deleteEvent;
+  final Function(BuildContext, String, String, int, int) editEvent;
+
   Task(
       {required this.id,
       required this.description,
       required this.pomosDone,
-      required this.pomosTotal});
+      required this.pomosTotal,
+      required this.deleteEvent,
+      required this.editEvent});
 
   Slidable getVisualisedTask() {
     return Slidable(
-      startActionPane: const ActionPane(
-        motion: BehindMotion(),
+      startActionPane: ActionPane(
+        motion: const BehindMotion(),
         children: [
           SlidableAction(
             autoClose: true,
-            onPressed: null,
-            //TODO usuń task
+            onPressed: (BuildContext context) {
+              deleteEvent(id);
+            },
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
             icon: Icons.delete,
           )
         ],
       ),
-      endActionPane: const ActionPane(
-        motion: BehindMotion(),
+      endActionPane: ActionPane(
+        motion: const BehindMotion(),
         children: [
           SlidableAction(
             autoClose: true,
-            onPressed: null,
-            //TODO edytuj task
+            onPressed: (BuildContext context) {
+              editEvent(context, id, description, pomosDone, pomosTotal);
+            },
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
             icon: Icons.edit,
@@ -43,11 +52,15 @@ class Task {
         ],
       ),
       child: ListTile(
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(color: Colors.black, width: 1),
+          borderRadius: BorderRadius.circular(5),
+        ),
         tileColor: taskColor,
         title: Text(description),
         trailing: SizedBox(
             width: 50,
-            height: 40,
+            height: 30,
             child: Row(children: [
               Text('$pomosDone/$pomosTotal'),
               const Icon(

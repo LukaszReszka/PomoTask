@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 class CalendarClient {
   CalendarApi? _calendarApi;
   final _googleSignIn =
-      GoogleSignIn(scopes: ['https://www.googleapis.com/auth/calendar']);
+  GoogleSignIn(scopes: ['https://www.googleapis.com/auth/calendar']);
   GoogleSignInAccount? _currentUser;
 
   Future<bool> initAuth() async {
@@ -85,12 +85,27 @@ class CalendarClient {
 
   getEventsFromDay(datetime) async {
     var convertedDate =
-        DateTime.parse(DateFormat('yyyy-MM-dd').format(datetime));
+    DateTime.parse(DateFormat('yyyy-MM-dd').format(datetime));
 
     var events = await _calendarApi?.events.list('primary',
         timeMin: convertedDate.add(const Duration(seconds: -1)),
         timeMax: convertedDate.add(const Duration(days: 1)));
 
     return events?.items;
+  }
+
+  deleteEvent(String eventId) async {
+    await _calendarApi?.events.delete('primary', eventId);
+    log('Deleted event $eventId');
+  }
+
+  Future<Event?> editEvent(String eventId, String description, int pomosDone,
+      int pomosTotal) async {
+    Event? event = await _calendarApi?.events.get('primary', eventId);
+    event?.summary = description;
+    event?.description =
+    'Created by PomoTask ;)\nPomos: $pomosDone / $pomosTotal';
+
+    return await _calendarApi?.events.update(event!, 'primary', eventId);
   }
 }
