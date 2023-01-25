@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/calendar/v3.dart';
+import 'package:intl/intl.dart';
 
 class CalendarClient {
   CalendarApi? _calendarApi;
@@ -63,7 +64,7 @@ class CalendarClient {
         summary: title,
         start: start,
         end: end,
-        description: 'Created by PomoTask ;)\nPomos: $pomosDone/$totalPomos',
+        description: 'Created by PomoTask ;)\nPomos: $pomosDone / $totalPomos',
         colorId: '11',
         eventType: 'focusTime',
         reminders: reminders);
@@ -80,5 +81,16 @@ class CalendarClient {
     } catch (e) {
       log('Error creating event $e');
     }
+  }
+
+  getEventsFromDay(datetime) async {
+    var convertedDate =
+        DateTime.parse(DateFormat('yyyy-MM-dd').format(datetime));
+
+    var events = await _calendarApi?.events.list('primary',
+        timeMin: convertedDate.add(const Duration(seconds: -1)),
+        timeMax: convertedDate.add(const Duration(days: 1)));
+
+    return events?.items;
   }
 }
